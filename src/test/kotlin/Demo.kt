@@ -1,4 +1,4 @@
-import io.github.yanwensiyi.classfile.util.builds
+import io.github.yanwensiyi.classfile.util.loads
 import io.github.yanwensiyi.classfile.util.`class`
 import io.github.yanwensiyi.classfile.util.defaultConstructor
 import io.github.yanwensiyi.classfile.util.extends
@@ -10,7 +10,7 @@ interface Add {
 }
 
 fun main() {
-    val clazz = `class`("Test") extends "java.lang.Object" implements Add::class builds {
+    val clazz = `class`("Test") extends "java.lang.Object" implements Add::class loads {
         defaultConstructor()
         method("add", "(II)I") {
             iload(1)
@@ -19,8 +19,6 @@ fun main() {
             ireturn()
         }
     }
-    clazz.getDeclaredMethod("add", Int::class.java, Int::class.java)
-        .invoke(clazz.newInstance(), 114514, 1919810)
-        .let(::println)
+    println((clazz.newInstance() as Add).add(114514, 1919810))
 }
 
