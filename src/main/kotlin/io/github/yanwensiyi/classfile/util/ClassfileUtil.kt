@@ -111,8 +111,8 @@ inline infix fun Context.implements(clazz: String) = apply {
     interfaces?.add(clazz)
 }
 
-infix fun Context.builds(block: ClassBuilder.() -> Unit): Class<*> {
-    return definer!!.defineClass(classFile.build(desc) {
+infix fun Context.builds(block: ClassBuilder.() -> Unit): ByteArray {
+    return classFile.build(desc) {
         val superclass = superclass
         if (superclass != null)
             it.withSuperclass(superclass.toClassDesc())
@@ -122,7 +122,11 @@ infix fun Context.builds(block: ClassBuilder.() -> Unit): Class<*> {
             it.withInterfaces(interfaces.map { pool.classEntry(it.toClassDesc()) })
         }
         it.block()
-    }, args)
+    }
+}
+
+infix fun Context.loads(block: ClassBuilder.() -> Unit): Class<*> {
+    return definer!!.defineClass(builds(block), args)
 }
 
 inline fun ClassBuilder.implements(vararg types: String) {
